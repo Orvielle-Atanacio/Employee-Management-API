@@ -29,13 +29,8 @@ public class EmployeeRestController {
     }
 
     @GetMapping("/employees")
-    public List<Employee> findAll() {
-        return employeeService.findAll();
-    }
-
-    @PutMapping("/employees")
-    public Employee updateEmployee(@RequestBody Employee theEmployee) {
-        return employeeService.save(theEmployee);
+    public List<EmployeeResponseDTO> findAll() {
+        return employeeService.findAll().stream().map(emp -> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail())).toList();
     }
 
     @DeleteMapping("/employees/{employeeId}")
@@ -58,5 +53,17 @@ public class EmployeeRestController {
      @GetMapping("/employees/{employeeId}")
     public ResponseEntity<EmployeeResponseDTO> createUser(@PathVariable int employeeId) {
         return ResponseEntity.ok(employeeService.getUserById(employeeId));
+    }
+
+      @PutMapping("/employees")
+    public EmployeeResponseDTO updateEmployee (@RequestBody CreateEmployeeRequestDTO theEmployee) {
+        Employee employee = new Employee();
+        employee.setId(theEmployee.id());
+        employee.setFirstName(theEmployee.firstName());
+        employee.setEmail(theEmployee.email());
+
+        Employee saved = employeeService.save(employee);
+
+        return new EmployeeResponseDTO(saved.getFirstName(), saved.getEmail());
     }
 }
