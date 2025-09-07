@@ -1,3 +1,4 @@
 package com.luv2code.springboot.cruddemo.dto;
 
-public record EmployeeResponseDTO(String firstName, String email) {} 
+public record EmployeeResponseDTO(int id, String firstName, String lastName, String email) {}
+

@@ -58,7 +58,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     public EmployeeResponseDTO createUser(CreateEmployeeRequestDTO request){
         Employee employee = new Employee();
-        employee.setId(request.id());
         employee.setFirstName(request.firstName());
         employee.setLastName(request.lastName());
         employee.setEmail(request.email());
