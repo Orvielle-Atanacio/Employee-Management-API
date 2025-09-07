@@ -16,7 +16,6 @@ public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
-    @NotNull(message = "ID number is required")
     @Column(name = "id")
     private int id;
 
@@ -24,6 +23,7 @@ public class Employee {
     @Column(name = "first_name")
     private String firstName;
 
+    @NotNull(message = "Last name is required")
     @Column(name = "last_name")
     private String lastName;
 

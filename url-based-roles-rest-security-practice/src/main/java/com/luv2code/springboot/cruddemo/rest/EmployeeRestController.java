@@ -19,6 +19,8 @@ import com.luv2code.springboot.cruddemo.dto.EmployeeResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
@@ -46,7 +48,8 @@ public class EmployeeRestController {
     }
 
     @PostMapping("/employees")
-    public ResponseEntity<EmployeeResponseDTO> createEmployee(@RequestBody CreateEmployeeRequestDTO theEmployee) {
+    public ResponseEntity<EmployeeResponseDTO> createEmployee(
+            @Valid @RequestBody CreateEmployeeRequestDTO theEmployee) {
         EmployeeResponseDTO response = employeeService.createUser(theEmployee);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
