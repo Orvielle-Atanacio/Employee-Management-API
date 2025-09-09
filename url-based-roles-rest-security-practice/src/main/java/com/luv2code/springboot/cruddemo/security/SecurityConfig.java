@@ -4,26 +4,30 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.Customizer;
+
+
 import javax.sql.DataSource;
 
 @Configuration
 public class SecurityConfig {
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-                http.authorizeHttpRequests(configurer -> configurer
-
+                http.authorizeHttpRequests(authz -> authz
                                 .requestMatchers(HttpMethod.GET, "/api/employees").hasRole("EMPLOYEE")
                                 .requestMatchers(HttpMethod.GET, "/api/employees/**").hasRole("EMPLOYEE")
                                 .requestMatchers(HttpMethod.POST, "/api/employees").hasRole("MANAGER")
                                 .requestMatchers(HttpMethod.PUT, "/api/employees/**").hasRole("MANAGER")
                                 .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN"));
 
-                http.httpBasic();
-                http.csrf().disable();
+                http.httpBasic(Customizer.withDefaults());
+                http.csrf(csrf -> csrf.disable());
+                http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
                 return http.build();
         }
 

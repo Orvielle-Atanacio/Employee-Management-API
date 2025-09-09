@@ -2,6 +2,10 @@ package com.luv2code.springboot.cruddemo.rest;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.luv2code.springboot.cruddemo.ExceptionHandling.EmployeeNotFoundException;
@@ -32,10 +37,22 @@ public class EmployeeRestController {
     }
 
     @GetMapping("/employees")
-    public List<EmployeeResponseDTO> findAll() {
-        return employeeService.findAll().stream()
-                .map(emp -> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail())).toList();
+    public ResponseEntity<Page<EmployeeResponseDTO>> getAllEmployees(
+            @Valid @RequestParam(defaultValue = "0") int page,
+            @Valid @RequestParam(defaultValue = "10") int size,
+            @Valid @RequestParam(defaultValue = "id, asc") String[] sort) {
+
+        String sortField = sort[0];
+        String sortDirection = sort[1];
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        Page<Employee> employees = employeeService.getAllEmployees(pageable); 
+
+        Page<EmployeeResponseDTO> dtoPage = employees.map(emp-> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail()));
+        return ResponseEntity.ok(dtoPage);
     }
+    
 
     @DeleteMapping("/employees/{employeeId}")
     public String deleteEmployee(@PathVariable int employeeId) {
@@ -72,3 +89,4 @@ public class EmployeeRestController {
         return ResponseEntity.ok(responseDTO);
     }
 }
+

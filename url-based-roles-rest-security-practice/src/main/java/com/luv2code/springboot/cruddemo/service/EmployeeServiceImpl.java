@@ -1,7 +1,6 @@
 package com.luv2code.springboot.cruddemo.service;
 
 import java.util.Optional;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,20 +9,18 @@ import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.dto.CreateEmployeeRequestDTO;
 import com.luv2code.springboot.cruddemo.dto.EmployeeResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Employee;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 
+    @Autowired
     EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
         employeeRepository = theEmployeeRepository;
-    }
-
-    @Override
-    public List<Employee> findAll() {
-        return employeeRepository.findAll();
     }
 
     @Override
@@ -56,7 +53,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         return toResponse(employee);
     }
 
-    public EmployeeResponseDTO createUser(CreateEmployeeRequestDTO request){
+    public EmployeeResponseDTO createUser(CreateEmployeeRequestDTO request) {
         Employee employee = new Employee();
         employee.setFirstName(request.firstName());
         employee.setLastName(request.lastName());
@@ -68,5 +65,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private EmployeeResponseDTO toResponse(Employee employee) {
         return new EmployeeResponseDTO(employee.getFirstName(), employee.getEmail());
+    }
+
+    @Override
+    public Page<Employee> getAllEmployees(Pageable pageable) {
+        return employeeRepository.findAll(pageable);
     }
 }
