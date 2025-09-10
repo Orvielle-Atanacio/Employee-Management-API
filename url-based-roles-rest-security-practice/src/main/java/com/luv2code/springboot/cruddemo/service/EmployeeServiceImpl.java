@@ -64,7 +64,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private EmployeeResponseDTO toResponse(Employee employee) {
-        return new EmployeeResponseDTO(employee.getFirstName(), employee.getEmail());
+        return new EmployeeResponseDTO(employee.getFirstName(), employee.getEmail(), employee.getId());
     }
 
     @Override

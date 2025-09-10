@@ -9,17 +9,23 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
+// Marks this class as a JPA entity, representing a table in the database.
 @Entity
+// Specifies the name of the database table this entity maps to.
 @Table(name = "employee")
 public class Employee {
 
+    // Marks this field as the primary key of the table.
     @Id
+    // Configures how the primary key is generated (auto-increment in most databases).
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
+    // Maps this field to the 'id' column in the table.
     @Column(name = "id")
     private int id;
 
+    // Validation: Ensures this field is not null before saving to the database.
     @NotNull(message = "First name is required")
+    // Maps this field to the 'first_name' column in the table.
     @Column(name = "first_name")
     private String firstName;
 
@@ -27,22 +33,25 @@ public class Employee {
     @Column(name = "last_name")
     private String lastName;
 
+    // Validation: Ensures the field is not null and contains a valid email format.
     @NotNull(message = "Email Address is required")
-    @Email(message= "Must be a valid email")
+    @Email(message = "Must be a valid email")
     @Column(name = "email")
     private String email;
 
-    // constructors
+    // Default constructor required by JPA for entity creation.
     public Employee() {
     }
 
+    // Convenience constructor for creating new Employee objects without an ID (which will be generated).
     public Employee(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
     }
 
-    // getters/setters
+    // --- Standard Getters and Setters ---
+    // Allow other parts of the application to access and modify the private fields.
     public int getId() {
         return id;
     }
@@ -75,7 +84,7 @@ public class Employee {
         this.email = email;
     }
 
-    // toString
+    // Provides a string representation of the Employee object, useful for logging and debugging.
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";

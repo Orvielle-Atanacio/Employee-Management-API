@@ -26,67 +26,122 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
+// Marks this class as a REST controller whose methods return domain objects (not views).
+// All endpoints in this class will be prefixed with "/api".
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
 
-    EmployeeService employeeService;
+    // Service layer dependency for handling business logic.
+    private final EmployeeService employeeService;
 
+    // Constructor-based dependency injection (best practice).
     public EmployeeRestController(EmployeeService theEmployeeService) {
         employeeService = theEmployeeService;
     }
+
+    /**
+     * GET endpoint to fetch a paginated and sorted list of all employees.
+     * 
+     * @param page The page number to retrieve (defaults to 0).
+     * @param size The number of items per page (defaults to 10).
+     * @param sort An array defining the sort field and direction (e.g.,
+     *             ["firstName", "asc"]).
+     * @return A ResponseEntity containing a Page of EmployeeResponseDTO objects.
+     */
 
     @GetMapping("/employees")
     public ResponseEntity<Page<EmployeeResponseDTO>> getAllEmployees(
             @Valid @RequestParam(defaultValue = "0") int page,
             @Valid @RequestParam(defaultValue = "10") int size,
-            @Valid @RequestParam(defaultValue = "id, asc") String[] sort) {
+            @Valid @RequestParam(defaultValue = "id,asc") String[] sort) { // Changed default to avoid space issue
 
+        // Parse the sort parameter into field and direction.
         String sortField = sort[0];
         String sortDirection = sort[1];
         Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
 
+        // Create a PageRequest object which encapsulates pagination and sorting info.
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
-        Page<Employee> employees = employeeService.getAllEmployees(pageable); 
 
-        Page<EmployeeResponseDTO> dtoPage = employees.map(emp-> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail()));
+        // Fetch the page of Employee entities from the service.
+        Page<Employee> employeePage = employeeService.getAllEmployees(pageable);
+
+        // Map the Page of Entities to a Page of DTOs to control the exposed data.
+        Page<EmployeeResponseDTO> dtoPage = employeePage
+                .map(emp -> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail(), emp.getId()));
+
+        // Return the page of DTOs with an HTTP 200 OK status.
         return ResponseEntity.ok(dtoPage);
     }
-    
 
+    /**
+     * DELETE endpoint to remove an employee by their ID.
+     * 
+     * @param employeeId The ID of the employee to delete.
+     * @return A confirmation message.
+     * @throws EmployeeNotFoundException if no employee with the given ID exists.
+     */
     @DeleteMapping("/employees/{employeeId}")
-    public String deleteEmployee(@PathVariable int employeeId) {
-        Employee tempEmployee = employeeService.findById(employeeId);
-        if (tempEmployee == null) {
-            throw new EmployeeNotFoundException("Employee id not found - " + employeeId);
-        }
+    public ResponseEntity<String> deleteEmployee(@PathVariable int employeeId) {
+        // This call will throw EmployeeNotFoundException if not found.
         employeeService.deleteById(employeeId);
-        return "Deleted employee id - " + employeeId;
+        return ResponseEntity.ok("Deleted employee id - " + employeeId);
     }
 
+    /**
+     * POST endpoint to create a new employee.
+     * 
+     * @param theEmployee The DTO containing data for the new employee.
+     * @return A ResponseEntity with the created employee's data and HTTP 201
+     *         status.
+     */
     @PostMapping("/employees")
     public ResponseEntity<EmployeeResponseDTO> createEmployee(
             @Valid @RequestBody CreateEmployeeRequestDTO theEmployee) {
+        // Delegate the creation logic to the service layer and get the response DTO.
         EmployeeResponseDTO response = employeeService.createUser(theEmployee);
+        // Return the response with an HTTP 201 Created status.
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    /**
+     * GET endpoint to fetch a single employee by their ID.
+     * 
+     * @param employeeId The ID of the employee to retrieve.
+     * @return A ResponseEntity containing the EmployeeResponseDTO.
+     */
     @GetMapping("/employees/{employeeId}")
-    public ResponseEntity<EmployeeResponseDTO> createUser(@PathVariable int employeeId) {
+    public ResponseEntity<EmployeeResponseDTO> getEmployee(@PathVariable int employeeId) { // Renamed method for clarity
+        // Fetch the employee and convert to DTO via the service layer.
         return ResponseEntity.ok(employeeService.getUserById(employeeId));
     }
 
+    /**
+     * PUT endpoint to update an existing employee.
+     * 
+     * @param id  The ID of the employee to update.
+     * @param dto The DTO containing the updated data.
+     * @return A ResponseEntity with the updated employee's data.
+     */
     @PutMapping("/employees/{id}")
     public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable int id,
-            @RequestBody CreateEmployeeRequestDTO dto) {
-        Employee employee = employeeService.findById(id); // fetch existing
+            @Valid @RequestBody CreateEmployeeRequestDTO dto) { // Added @Valid for consistency
+        // 1. Fetch the existing employee from the database (throws exception if not
+        // found).
+        Employee employee = employeeService.findById(id);
+
+        // 2. Update the entity with new values from the DTO.
         employee.setFirstName(dto.firstName());
         employee.setLastName(dto.lastName());
         employee.setEmail(dto.email());
 
-        Employee updated = employeeService.save(employee);
-        EmployeeResponseDTO responseDTO = new EmployeeResponseDTO(updated.getFirstName(), updated.getEmail());
+        // 3. Save the updated entity back to the database.
+        Employee updatedEmployee = employeeService.save(employee);
+
+        // 4. Convert the saved entity to a Response DTO and return it.
+        EmployeeResponseDTO responseDTO = new EmployeeResponseDTO(updatedEmployee.getFirstName(),
+                updatedEmployee.getEmail(), updatedEmployee.getId());
         return ResponseEntity.ok(responseDTO);
     }
 }
-
