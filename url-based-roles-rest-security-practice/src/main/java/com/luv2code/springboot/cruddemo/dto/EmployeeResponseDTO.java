@@ -8,7 +8,6 @@ public record EmployeeResponseDTO(
         String firstName,
         // The email address of the employee to be shown to the client.
         String email,
-        
         // The employee id to be shown to the client.
         int id) {
 }

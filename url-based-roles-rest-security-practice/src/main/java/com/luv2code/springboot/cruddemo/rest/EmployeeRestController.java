@@ -26,8 +26,13 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+
 // Marks this class as a REST controller whose methods return domain objects (not views).
 // All endpoints in this class will be prefixed with "/api".
+@Tag(name = "Employee Management", description = "CRUD operations for employees")
 @RestController
 @RequestMapping("/api")
 public class EmployeeRestController {
