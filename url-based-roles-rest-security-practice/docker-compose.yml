@@ -5,6 +5,7 @@ services:
     environment:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: orvi27
+      POSTGRES_DB: employee_db
       PGDATA: /data/postgres
     volumes:
       - db-data:/var/lib/postgresql/data
