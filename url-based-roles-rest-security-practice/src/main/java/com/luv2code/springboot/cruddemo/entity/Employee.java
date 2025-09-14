@@ -1,11 +1,7 @@
 package com.luv2code.springboot.cruddemo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,7 +13,8 @@ public class Employee {
 
     // Marks this field as the primary key of the table.
     @Id
-    // Configures how the primary key is generated (auto-increment in most databases).
+    // Configures how the primary key is generated (auto-increment in most
+    // databases).
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // Maps this field to the 'id' column in the table.
     @Column(name = "id")
@@ -39,11 +36,16 @@ public class Employee {
     @Column(name = "email")
     private String email;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
+
     // Default constructor required by JPA for entity creation.
     public Employee() {
     }
 
-    // Convenience constructor for creating new Employee objects without an ID (which will be generated).
+    // Convenience constructor for creating new Employee objects without an ID
+    // (which will be generated).
     public Employee(String firstName, String lastName, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -84,7 +86,16 @@ public class Employee {
         this.email = email;
     }
 
-    // Provides a string representation of the Employee object, useful for logging and debugging.
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+    // Provides a string representation of the Employee object, useful for logging
+    // and debugging.
     @Override
     public String toString() {
         return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";

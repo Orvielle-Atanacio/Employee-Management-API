@@ -5,9 +5,11 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.dto.CreateEmployeeRequestDTO;
 import com.luv2code.springboot.cruddemo.dto.EmployeeResponseDTO;
+import com.luv2code.springboot.cruddemo.entity.Department;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,17 +18,26 @@ import org.springframework.data.domain.Pageable;
 public class EmployeeServiceImpl implements EmployeeService {
 
     @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
     public EmployeeServiceImpl(EmployeeRepository theEmployeeRepository) {
         employeeRepository = theEmployeeRepository;
     }
 
+    @Autowired
+    private DepartmentService departmentService;
+
     @Override
-    public Employee save(Employee theEmployee) {
-        Employee dbEmployee = employeeRepository.save(theEmployee);
-        return dbEmployee;
+    public Employee save(Employee theEmployee, String departmentName) {
+        if (theEmployee.getId() == 0) {
+            if (employeeRepository.findByEmail(theEmployee.getEmail()).isPresent()) {
+                throw new RuntimeException("Employee with email already exists: " + theEmployee.getEmail());
+            }
+        }
+        Department department = departmentService.getDepartmentByName(departmentName);
+        theEmployee.setDepartment(department);
+        return employeeRepository.save(theEmployee);
     }
 
     @Override
@@ -70,5 +81,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<Employee> getAllEmployees(Pageable pageable) {
         return employeeRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Employee> getEmployeesByDepartment(Long departmentId, Pageable pageable) {
+        // ensures department exists, will throw if not found
+        departmentService.getDepartmentById(departmentId);
+        return employeeRepository.findByDepartmentId(departmentId, pageable);
     }
 }

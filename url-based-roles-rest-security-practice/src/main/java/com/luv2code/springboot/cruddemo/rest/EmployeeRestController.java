@@ -26,7 +26,6 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 
 import jakarta.validation.Valid;
 
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 
@@ -142,7 +141,7 @@ public class EmployeeRestController {
         employee.setEmail(dto.email());
 
         // 3. Save the updated entity back to the database.
-        Employee updatedEmployee = employeeService.save(employee);
+        Employee updatedEmployee = employeeService.save(employee, dto.departmentName());
 
         // 4. Convert the saved entity to a Response DTO and return it.
         EmployeeResponseDTO responseDTO = new EmployeeResponseDTO(updatedEmployee.getFirstName(),

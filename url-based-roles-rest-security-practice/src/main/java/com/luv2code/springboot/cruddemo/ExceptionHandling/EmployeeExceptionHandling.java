@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,8 +33,7 @@ public class EmployeeExceptionHandling {
         ErrorResponse error = new ErrorResponse(
                 clientFriendlyMessage, // Use the safe, generic message
                 HttpStatus.INTERNAL_SERVER_ERROR.value(), // Use 500 for unexpected errors
-                System.currentTimeMillis()
-        );
+                System.currentTimeMillis());
 
         // 4. RETURN THE RESPONSE
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -53,7 +52,8 @@ public class EmployeeExceptionHandling {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException(MethodArgumentNotValidException exc) {
-        // Validation errors are also safe to show to the client so they can correct their input.
+        // Validation errors are also safe to show to the client so they can correct
+        // their input.
         String message = exc.getBindingResult().getFieldErrors()
                 .stream()
                 .map(err -> err.getField() + ": " + err.getDefaultMessage())
@@ -63,5 +63,15 @@ public class EmployeeExceptionHandling {
                 HttpStatus.BAD_REQUEST.value(),
                 System.currentTimeMillis());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<ErrorResponse> handleException(DuplicateResourceException exc) {
+        ErrorResponse error = new ErrorResponse(
+                exc.getMessage(),
+                HttpStatus.CONFLICT.value(),
+                System.currentTimeMillis());
+
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
 }

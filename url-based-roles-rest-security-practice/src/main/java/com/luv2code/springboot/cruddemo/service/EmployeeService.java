@@ -19,7 +19,7 @@ public interface EmployeeService {
 
     // Saves a new employee or updates an existing one in the database.
     // Returns the saved employee entity (often with a generated ID if it's new).
-    Employee save(Employee theEmployee);
+    Employee save(Employee theEmployee, String deparmtentName);
 
     // Finds a specific employee by their unique ID.
     // Throws an exception (e.g., ResourceNotFoundException) if the employee is not found.
@@ -36,4 +36,6 @@ public interface EmployeeService {
     // This separates the API request structure from the internal Entity model.
     // Returns a Response DTO containing the saved employee's data for the client.
     EmployeeResponseDTO createUser(CreateEmployeeRequestDTO request);
+
+    Page<Employee> getEmployeesByDepartment(Long departmentId, Pageable pageable);
 }

@@ -10,7 +10,6 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.config.Customizer;
 
-
 import javax.sql.DataSource;
 
 // Marks this class as a configuration class for Spring Security.
@@ -31,8 +30,14 @@ public class SecurityConfig {
                 // Only ADMIN role can delete employees.
                 .requestMatchers(HttpMethod.DELETE, "/api/employees/**").hasRole("ADMIN")
                 // All other requests must be authenticated (common best practice).
-                .anyRequest().authenticated()
-        );
+                .requestMatchers(HttpMethod.GET, "/api/departments").hasRole("EMPLOYEE") // GET all
+                .requestMatchers(HttpMethod.GET, "/api/departments/{id}").hasRole("EMPLOYEE") // GET by ID
+                .requestMatchers(HttpMethod.GET, "/api/departments/name/{name}").hasRole("EMPLOYEE") // GET by name
+                .requestMatchers(HttpMethod.POST, "/api/departments").hasRole("MANAGER") // CREATE
+                .requestMatchers(HttpMethod.PUT, "/api/departments/{id}").hasRole("MANAGER") // UPDATE
+                .requestMatchers(HttpMethod.DELETE, "/api/departments/{id}").hasRole("ADMIN") // DELETE
+                
+                .anyRequest().authenticated());
 
         // Enables HTTP Basic Authentication (pop-up login in browsers).
         http.httpBasic(Customizer.withDefaults());
@@ -46,7 +51,8 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Configures a custom JDBC-based user detail service to fetch users/roles from your database.
+    // Configures a custom JDBC-based user detail service to fetch users/roles from
+    // your database.
     @Bean
     public UserDetailsManager userDetailsManager(DataSource dataSource) {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
