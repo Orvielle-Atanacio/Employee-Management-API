@@ -93,11 +93,4 @@ public class Employee {
     public void setDepartment(Department department) {
         this.department = department;
     }
-
-    // Provides a string representation of the Employee object, useful for logging
-    // and debugging.
-    @Override
-    public String toString() {
-        return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", email=" + email + "]";
-    }
 }

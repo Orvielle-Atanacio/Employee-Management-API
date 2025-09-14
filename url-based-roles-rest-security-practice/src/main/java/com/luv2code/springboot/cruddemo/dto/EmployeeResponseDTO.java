@@ -9,5 +9,7 @@ public record EmployeeResponseDTO(
         // The email address of the employee to be shown to the client.
         String email,
         // The employee id to be shown to the client.
-        int id) {
+        int id,
+        // The empployee department Id
+        DepartmentResponseDTO deparment) {
 }

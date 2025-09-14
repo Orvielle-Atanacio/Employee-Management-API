@@ -91,5 +91,4 @@ public class DepartmentRestController {
         departmentService.deleteDepartment(id);
         return ResponseEntity.noContent().build();
     }
-
 }

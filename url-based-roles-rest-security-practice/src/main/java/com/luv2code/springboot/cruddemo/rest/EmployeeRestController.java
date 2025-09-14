@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.luv2code.springboot.cruddemo.ExceptionHandling.EmployeeNotFoundException;
 import com.luv2code.springboot.cruddemo.dto.CreateEmployeeRequestDTO;
+import com.luv2code.springboot.cruddemo.dto.DepartmentResponseDTO;
 import com.luv2code.springboot.cruddemo.dto.EmployeeResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
@@ -27,7 +28,6 @@ import com.luv2code.springboot.cruddemo.service.EmployeeService;
 import jakarta.validation.Valid;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-
 
 // Marks this class as a REST controller whose methods return domain objects (not views).
 // All endpoints in this class will be prefixed with "/api".
@@ -73,7 +73,8 @@ public class EmployeeRestController {
 
         // Map the Page of Entities to a Page of DTOs to control the exposed data.
         Page<EmployeeResponseDTO> dtoPage = employeePage
-                .map(emp -> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail(), emp.getId()));
+                .map(emp -> new EmployeeResponseDTO(emp.getFirstName(), emp.getEmail(), emp.getId(),
+                        emp.getDepartment() != null ? new DepartmentResponseDTO(emp.getDepartment()) : null));
 
         // Return the page of DTOs with an HTTP 200 OK status.
         return ResponseEntity.ok(dtoPage);
@@ -134,7 +135,6 @@ public class EmployeeRestController {
         // 1. Fetch the existing employee from the database (throws exception if not
         // found).
         Employee employee = employeeService.findById(id);
-
         // 2. Update the entity with new values from the DTO.
         employee.setFirstName(dto.firstName());
         employee.setLastName(dto.lastName());
@@ -143,9 +143,13 @@ public class EmployeeRestController {
         // 3. Save the updated entity back to the database.
         Employee updatedEmployee = employeeService.save(employee, dto.departmentName());
 
+        DepartmentResponseDTO departmentDTO = new DepartmentResponseDTO(
+                updatedEmployee.getDepartment().getId(),
+                updatedEmployee.getDepartment().getName());
+
         // 4. Convert the saved entity to a Response DTO and return it.
         EmployeeResponseDTO responseDTO = new EmployeeResponseDTO(updatedEmployee.getFirstName(),
-                updatedEmployee.getEmail(), updatedEmployee.getId());
+                updatedEmployee.getEmail(), updatedEmployee.getId(), departmentDTO);
         return ResponseEntity.ok(responseDTO);
     }
 }

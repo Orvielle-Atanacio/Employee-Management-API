@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.luv2code.springboot.cruddemo.dao.EmployeeRepository;
 import com.luv2code.springboot.cruddemo.dto.CreateEmployeeRequestDTO;
+import com.luv2code.springboot.cruddemo.dto.DepartmentResponseDTO;
 import com.luv2code.springboot.cruddemo.dto.EmployeeResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Department;
 import com.luv2code.springboot.cruddemo.entity.Employee;
@@ -16,7 +17,7 @@ import org.springframework.data.domain.Pageable;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-
+    
     @Autowired
     private EmployeeRepository employeeRepository;
 
@@ -75,7 +76,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     private EmployeeResponseDTO toResponse(Employee employee) {
-        return new EmployeeResponseDTO(employee.getFirstName(), employee.getEmail(), employee.getId());
+        return new EmployeeResponseDTO(employee.getFirstName(), employee.getEmail(), employee.getId(), employee.getDepartment() != null ? new DepartmentResponseDTO(null) : null);
     }
 
     @Override
