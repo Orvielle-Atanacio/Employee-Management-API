@@ -1,4 +1,4 @@
-# Employee Management API
+# Employee and Department Management API
 
 A Spring Boot REST API I built to manage company employees and their departments. It handles secure role-based access, data validation, and uses a Dockerized PostgreSQL database.
 
