@@ -27,13 +27,17 @@ A Spring Boot REST API I built to manage company employees and their departments
 - Maven
 - Docker
 
-### Running the application
-
-1. **Start the database:**
+### Running the application (make sure docker is running)
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/Orvielle-Atanacio/Employee-Management-API.git
+    cd Employee-Management-API
+    ``` 
+2. **Start the database:**
    ```bash
    docker-compose up -d
    ```
-2. Run the Spring Boot app:
+3. Run the Spring Boot app:
 
     ```bash
     mvn spring-boot:run
