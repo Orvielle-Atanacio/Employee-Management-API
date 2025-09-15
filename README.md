@@ -26,28 +26,38 @@ A Spring Boot REST API I built to manage company employees and their departments
 ### Prerequisites
 - Java 17+
 - Maven
-- Docker
+- Docker & Docker Compose
 
-### Running the application (make sure docker is running)
-1.  **Clone the repository:**
-    ```bash
-    git clone https://github.com/Orvielle-Atanacio/Employee-Management-API.git
-    cd Employee-Management-API
-    ``` 
-2. **Start the database:**
+### Option 1: Run locally (Spring Boot in IDE, DB in Docker)
+1. **Clone the repository:**
    ```bash
-   docker-compose up -d
+   git clone https://github.com/Orvielle-Atanacio/Employee-Management-API.git
+   cd Employee-Management-API
    ```
-3. Run the Spring Boot app:
-
+2. Start PostgreSQL in Docker:
     ```bash
-    mvn spring-boot:run
+    docker-compose up -d db
     ```
-Access the API:
+3. Run the Spring Boot app locally:
+   ```bash
+   mvn spring-boot:run
+   ```
+   → Uses application.properties to connect to localhost:5332
+   
+### Option 2: Run everything in Docker (app + DB)
+1. Build jar file:
+   ```bash
+   mvn clean package
+   ```
+2. Start containers:
+   ```bash
+   docker-compose up -d --build
+   ```
+3. Access the API:
+   - **API**: http://localhost:8080
+   - **Swagger UI**: http://localhost:8080/swagger-ui.html
 
-- API: http://localhost:8080
 
-- Swagger UI: http://localhost:8080/swagger-ui.html
 
 ## 🔐 Default Users
 
