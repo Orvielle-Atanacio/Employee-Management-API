@@ -1,4 +1,8 @@
 # Employee and Department Management API
+![Java](https://img.shields.io/badge/Java-17-blue) 
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3-green)
+![Docker](https://img.shields.io/badge/Docker-Compose-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-lightblue)
 
 A Spring Boot REST API I built to manage company employees and their departments. It handles secure role-based access, data validation, and uses a Dockerized PostgreSQL database.
 
@@ -55,7 +59,7 @@ A Spring Boot REST API I built to manage company employees and their departments
    ```
 3. Access the API:
    - **API**: http://localhost:8080
-   - **Swagger UI**: http://localhost:8080/swagger-ui.html
+   - **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui/index.html)
 
 
 
@@ -99,3 +103,7 @@ These users are automatically created when the application starts:
 - Building REST APIs with proper validation
 - Using DTOs to separate API schema from database entities
 - Implementing efficient, scalable APIs using Spring Data's Pageable interface for pagination and sorting.
+
+## 📸 API in Action
+
+![Swagger UI Screenshot](assets/swagger-ui.png)
