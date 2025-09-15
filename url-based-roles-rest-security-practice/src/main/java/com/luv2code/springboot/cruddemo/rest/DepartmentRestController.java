@@ -36,33 +36,36 @@ public class DepartmentRestController {
 
     // Get all departments
     @GetMapping
-public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
-        @Valid @RequestParam(defaultValue = "0") int page,
-        @Valid @RequestParam(defaultValue = "10") int size,
-        @Valid @RequestParam(defaultValue = "id,asc") String[] sort) {
+    @Operation(summary = "Get all department with pagination")
+    public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
+            @Valid @RequestParam(defaultValue = "0") int page,
+            @Valid @RequestParam(defaultValue = "10") int size,
+            @Valid @RequestParam(defaultValue = "id,asc") String[] sort) {
 
-    // Parse the sort parameter into field and direction.
-    String sortField = sort[0];
-    String sortDirection = sort[1];
-    Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") 
-        ? Sort.Direction.DESC : Sort.Direction.ASC;
+        // Parse the sort parameter into field and direction.
+        String sortField = sort[0];
+        String sortDirection = sort[1];
+        Sort.Direction direction = sortDirection.equalsIgnoreCase("desc")
+                ? Sort.Direction.DESC
+                : Sort.Direction.ASC;
 
-    // Create a PageRequest object which encapsulates pagination and sorting info.
-    Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+        // Create a PageRequest object which encapsulates pagination and sorting info.
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
 
-    // Fetch the page of Department entities from the service.
-    Page<Department> departmentPage = departmentService.getAllDepartments(pageable);
+        // Fetch the page of Department entities from the service.
+        Page<Department> departmentPage = departmentService.getAllDepartments(pageable);
 
-    // Map the Page of Entities to a Page of DTOs to control the exposed data.
-    Page<DepartmentResponseDTO> dtoPage = departmentPage
-            .map(DepartmentResponseDTO::new);
+        // Map the Page of Entities to a Page of DTOs to control the exposed data.
+        Page<DepartmentResponseDTO> dtoPage = departmentPage
+                .map(DepartmentResponseDTO::new);
 
-    // Return the page of DTOs with an HTTP 200 OK status.
-    return ResponseEntity.ok(dtoPage);
-}
+        // Return the page of DTOs with an HTTP 200 OK status.
+        return ResponseEntity.ok(dtoPage);
+    }
 
-    // GET department by name
+    // GET department by id
     @GetMapping("/id/{id}")
+    @Operation(summary = "Get department by id")
     public ResponseEntity<DepartmentResponseDTO> getDepartmentById(@PathVariable Long id) {
         Department department = departmentService.getDepartmentById(id);
         DepartmentResponseDTO responseDTO = new DepartmentResponseDTO(department);
@@ -70,6 +73,7 @@ public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
     }
 
     // GET department by name
+    @Operation(summary = "Get department by name")
     @GetMapping("/name/{name}")
     public ResponseEntity<DepartmentResponseDTO> getDepartmentByName(@PathVariable String name) {
         Department department = departmentService.getDepartmentByName(name);
@@ -91,6 +95,7 @@ public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
 
     // UPDATE existing department
     @PutMapping("/{id}")
+    @Operation(summary = "Update existing department")
     public ResponseEntity<DepartmentResponseDTO> updateDepartment(@PathVariable Long id,
             @RequestBody @Valid DepartmentRequestDTO requestDTO) {
 
@@ -107,6 +112,7 @@ public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
 
     // DELETE department
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete a department without employee under it")
     public ResponseEntity<DepartmentResponseDTO> deleteDepartment(@PathVariable Long id) {
         departmentService.deleteDepartment(id);
         return ResponseEntity.noContent().build();

@@ -26,7 +26,7 @@ import com.luv2code.springboot.cruddemo.entity.Employee;
 import com.luv2code.springboot.cruddemo.service.EmployeeService;
 
 import jakarta.validation.Valid;
-
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 // Marks this class as a REST controller whose methods return domain objects (not views).
@@ -55,6 +55,7 @@ public class EmployeeRestController {
      */
 
     @GetMapping("/employees")
+    @Operation(summary = "Get all employees with corresponding department details")
     public ResponseEntity<Page<EmployeeResponseDTO>> getAllEmployees(
             @Valid @RequestParam(defaultValue = "0") int page,
             @Valid @RequestParam(defaultValue = "10") int size,
@@ -88,6 +89,7 @@ public class EmployeeRestController {
      * @throws EmployeeNotFoundException if no employee with the given ID exists.
      */
     @DeleteMapping("/employees/{employeeId}")
+    @Operation(summary = "Delete employee based on employee ID")
     public ResponseEntity<String> deleteEmployee(@PathVariable int employeeId) {
         // This call will throw EmployeeNotFoundException if not found.
         employeeService.deleteById(employeeId);
@@ -102,6 +104,7 @@ public class EmployeeRestController {
      *         status.
      */
     @PostMapping("/employees")
+    @Operation(summary = "Create new employee (id is autoincremented)")
     public ResponseEntity<EmployeeResponseDTO> createEmployee(
             @Valid @RequestBody CreateEmployeeRequestDTO theEmployee) {
         // Delegate the creation logic to the service layer and get the response DTO.
@@ -117,6 +120,7 @@ public class EmployeeRestController {
      * @return A ResponseEntity containing the EmployeeResponseDTO.
      */
     @GetMapping("/employees/{employeeId}")
+    @Operation(summary = "Get employee details based on employee ID)")
     public ResponseEntity<EmployeeResponseDTO> getEmployee(@PathVariable int employeeId) {
         // Fetch the employee entity
         Employee employee = employeeService.findById(employeeId); // This should return Employee entity
@@ -139,6 +143,7 @@ public class EmployeeRestController {
      * @return A ResponseEntity with the updated employee's data.
      */
     @PutMapping("/employees/{id}")
+    @Operation(summary = "Update an existing employee")
     public ResponseEntity<EmployeeResponseDTO> updateEmployee(@PathVariable int id,
             @Valid @RequestBody CreateEmployeeRequestDTO dto) { // Added @Valid for consistency
         // 1. Fetch the existing employee from the database (throws exception if not
