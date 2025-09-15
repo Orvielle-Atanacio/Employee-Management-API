@@ -1,9 +1,10 @@
 package com.luv2code.springboot.cruddemo.rest;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.luv2code.springboot.cruddemo.dto.DepartmentRequestDTO;
 import com.luv2code.springboot.cruddemo.dto.DepartmentResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Department;
+
 import com.luv2code.springboot.cruddemo.service.DepartmentService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -33,13 +36,30 @@ public class DepartmentRestController {
 
     // Get all departments
     @GetMapping
-    public ResponseEntity<List<DepartmentResponseDTO>> getAllDepartments() {
-        List<Department> departments = departmentService.getAllDepartments();
-        List<DepartmentResponseDTO> responseDTOs = departments.stream()
-                .map(DepartmentResponseDTO::new)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(responseDTOs);
-    }
+public ResponseEntity<Page<DepartmentResponseDTO>> getAllDepartments(
+        @Valid @RequestParam(defaultValue = "0") int page,
+        @Valid @RequestParam(defaultValue = "10") int size,
+        @Valid @RequestParam(defaultValue = "id,asc") String[] sort) {
+
+    // Parse the sort parameter into field and direction.
+    String sortField = sort[0];
+    String sortDirection = sort[1];
+    Sort.Direction direction = sortDirection.equalsIgnoreCase("desc") 
+        ? Sort.Direction.DESC : Sort.Direction.ASC;
+
+    // Create a PageRequest object which encapsulates pagination and sorting info.
+    Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortField));
+
+    // Fetch the page of Department entities from the service.
+    Page<Department> departmentPage = departmentService.getAllDepartments(pageable);
+
+    // Map the Page of Entities to a Page of DTOs to control the exposed data.
+    Page<DepartmentResponseDTO> dtoPage = departmentPage
+            .map(DepartmentResponseDTO::new);
+
+    // Return the page of DTOs with an HTTP 200 OK status.
+    return ResponseEntity.ok(dtoPage);
+}
 
     // GET department by name
     @GetMapping("/id/{id}")
@@ -58,7 +78,7 @@ public class DepartmentRestController {
     }
 
     // CREATE new department
-     @PostMapping
+    @PostMapping
     @Operation(summary = "Create a new department")
     @ApiResponse(responseCode = "201", description = "Department created")
     public ResponseEntity<DepartmentResponseDTO> createDepartment(

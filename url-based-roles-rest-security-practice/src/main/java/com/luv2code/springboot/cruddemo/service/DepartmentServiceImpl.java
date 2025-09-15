@@ -1,15 +1,18 @@
 package com.luv2code.springboot.cruddemo.service;
 
 import java.util.DuplicateFormatFlagsException;
-import java.util.List;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.luv2code.springboot.cruddemo.ExceptionHandling.EmployeeNotFoundException;
 import com.luv2code.springboot.cruddemo.dao.DepartmentRepository;
+import com.luv2code.springboot.cruddemo.dto.DepartmentResponseDTO;
 import com.luv2code.springboot.cruddemo.entity.Department;
+import com.luv2code.springboot.cruddemo.entity.Employee;
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -38,8 +41,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+    public Page<Department> getAllDepartments(Pageable pageable) {
+        return departmentRepository.findAll(pageable);
     }
 
     @Override
