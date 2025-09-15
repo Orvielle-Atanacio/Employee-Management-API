@@ -44,9 +44,8 @@ A Spring Boot REST API I built to manage company employees and their departments
     ```
 3. Load test data:
    ```bash
-   # Copy using relative path from project root
    docker cp ./src/main/resources/data.sql postgres:/tmp/data.sql
-   # Execute the SQL
+
    docker exec -it postgres psql -U orvi27 -d employee_db -f /tmp/data.sql
    ```
    
