@@ -66,7 +66,6 @@ A Spring Boot REST API I built to manage company employees and their departments
    docker-compose up -d --build
    ```
 3. Access the API:
-   - **API**: http://localhost:8080
    - **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui/index.html)
 
 
