@@ -11,5 +11,5 @@ public record EmployeeResponseDTO(
         // The employee id to be shown to the client.
         int id,
         // The empployee department Id
-        DepartmentResponseDTO deparment) {
+        DepartmentResponseDTO department) {
 }

@@ -117,9 +117,18 @@ public class EmployeeRestController {
      * @return A ResponseEntity containing the EmployeeResponseDTO.
      */
     @GetMapping("/employees/{employeeId}")
-    public ResponseEntity<EmployeeResponseDTO> getEmployee(@PathVariable int employeeId) { // Renamed method for clarity
-        // Fetch the employee and convert to DTO via the service layer.
-        return ResponseEntity.ok(employeeService.getUserById(employeeId));
+    public ResponseEntity<EmployeeResponseDTO> getEmployee(@PathVariable int employeeId) {
+        // Fetch the employee entity
+        Employee employee = employeeService.findById(employeeId); // This should return Employee entity
+
+        // Create the DTO using the same pattern as your /employees endpoint
+        EmployeeResponseDTO responseDTO = new EmployeeResponseDTO(
+                employee.getFirstName(),
+                employee.getEmail(),
+                employee.getId(),
+                employee.getDepartment() != null ? new DepartmentResponseDTO(employee.getDepartment()) : null);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     /**

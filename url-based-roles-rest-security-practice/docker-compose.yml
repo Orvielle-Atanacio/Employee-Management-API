@@ -15,10 +15,22 @@ services:
       - db
     restart: unless-stopped
 
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker   
+    depends_on:
+      - db
+    networks:
+      - db
+    restart: unless-stopped
+
 networks:
   db:
     driver: bridge
 
 volumes:
-  db-data:  
+  db-data:
     driver: local
