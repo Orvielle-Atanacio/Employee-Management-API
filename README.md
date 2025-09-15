@@ -10,6 +10,7 @@ A Spring Boot REST API I built to manage company employees and their departments
 - **Containerized Database**: PostgreSQL running in Docker for easy setup
 - **Auto Documentation**: Swagger UI for testing all endpoints
 - **Global Error Handling**: Clean, consistent error messages
+- **RESTful Best Practices: Includes pagination and sorting for efficient data retrieval on large datasets.
 
 ## 🛠️ Built With
 
@@ -87,3 +88,4 @@ These users are automatically created when the application starts:
 - Containerizing databases with Docker
 - Building REST APIs with proper validation
 - Using DTOs to separate API schema from database entities
+- Implementing efficient, scalable APIs using Spring Data's Pageable interface for pagination and sorting.
