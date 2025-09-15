@@ -58,7 +58,7 @@ A Spring Boot REST API I built to manage company employees and their departments
 ### Option 2: Run everything in Docker (app + DB)
 1. Build jar file:
    ```bash
-   mvn clean package
+   mvn clean package -DskipTests
    ```
 2. Start containers:
    ```bash
