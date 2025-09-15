@@ -36,6 +36,7 @@ A Spring Boot REST API I built to manage company employees and their departments
 1. **Clone the repository:**
    ```bash
    git clone https://github.com/Orvielle-Atanacio/Employee-Management-API.git
+   
    cd Employee-Management-API
    ```
 2. Start PostgreSQL in Docker:
