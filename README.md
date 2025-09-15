@@ -106,4 +106,4 @@ These users are automatically created when the application starts:
 
 ## 📸 API in Action
 
-![Swagger UI Screenshot](assets/swagger-ui.png)
+![Swagger UI Documentation](https://github.com/Orvielle-Atanacio/Employee-and-Department-Management-API/raw/main/url-based-roles-rest-security-practice/assets/swagger-ui.png)
