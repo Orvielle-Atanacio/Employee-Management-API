@@ -54,9 +54,9 @@ These users are automatically created when the application starts:
 
 | Username | Password | Role | What they can do |
 |----------|----------|------|------------------|
-| john | fun123 | EMPLOYEE | View data |
-| mary  | fun123 | MANAGER | Create & update |
-| susan    | fun123 | ADMIN | Full access + delete |
+| employee | fun123 | EMPLOYEE | View data |
+| manager  | fun123 | MANAGER | Create & update |
+| admin    | fun123 | ADMIN | Full access + delete |
 
 ## 🗂️ Project Structure
 
